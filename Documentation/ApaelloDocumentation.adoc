@@ -1,0 +1,67 @@
+= Apællo Documentation
+Luna Kilborn <leland.kilborn@hotmail.com>
+:description: The official documentation for the Apællo Language
+
+Apællo (pronounced uh - PIE - low) is a programming language based on Forth that adds first class functions, lists, and removes those unnecessary parser words. The original Forth language, designed in the 1970's was in wide use for home computers and maintains a significant pressence in embedded applications, due to the small size of the interpreter required to run it and the comfortability of low-level programming with it. Forth has been used everywhere, on people's home computers acting as a  pocket calculator, to teaching people about programming and computer science, to taking spacecraft to other planets and beyond. Forth is an amazing language, but that doesn't mean it can't be improved, which is what Apællo sets out to do.
+
+== Words
+
+The input is divided into lines, which are evaluated top to bottom, and further
+into words that are separated by spaces. If the line is determined to be a code
+line (more about other line types later) then the words in it are executed left
+to right. First, a word is assumed to be the opening or closing of a list. If it
+is not, then it is assumed to be a number. If it is not a number, then it is
+assumed to be the creation of a constant or variable. If it is not this either,
+then it is looked up in the dictionary. As this is the final step, if the word
+remains unidentified, then an error is thrown to the user telling them that the
+interpreter cannot find the word.
+
+=== Lists
+
+One of the primary additions over the original Forth that Apællo makes. They can
+contain other lists, numbers, or words. Lists are started by a `[` word, and are
+ended by `]`. Lists must be ended on the same line that they are started. The
+words between the brackets are what is put into the list. Do note that because
+the bracket symbols are their own words, they must be followed by a space. For
+example, `[1` and `1]` will be considered as the single words `[1` and `1]`, and 
+you must instead write `[ 1` and `1 ]` in order for it to be correctly processed
+as a list. When the interpreter encounters a list, it will add it to memory and
+push the identifier onto the top of the stack. However, if the list is contained
+inside another list, then after being added to memory the list will instead be
+replaced with a word containing the identifier of the list. When the list is run
+this will create the same effect as if it was a top level list due to the 
+behavior of number words, but this will be discussed more later.
+
+NOTE: The identifier that is pushed to the stack is _not_ the memory location of
+      the list, but rather the internal identifier number that is assigned to
+      everything stored in the program's memory. This will be discussed later.
+
+=== Numbers
+
+Numbers can either be signed longs or double precision floats. If the number
+contains a decimal, such as in `2.5` or `5.0`, then it will be stored as a 
+float. However, if the number does not contain a decimal point, such as in `2`
+or `5`, it will be stored as an integer. By default numbers are interpreted as a
+decimal, but can instead be interpreted as a binary number if preceded by a `B`,
+as an octal number if preceded by a `O`, and as a hex number if preceded by an
+`X`. Because Apællo serves to free you from restrictions, unlike other languages
+in which only integers can be in a non-decimal base, Apællo allows floats as
+well to be written in non-decimal bases, such as in `X1B.B3F`.
+
+=== Variables and Constants
+
+One of the more important features of Forth is its ability to define variables
+and constants. Variables store a mutable value who's _memory address_ is pushed 
+to the top of the stack by executing the variable's name as a word. Constants 
+store an immutable value who's _value_ is pushed to the top of the stack by 
+executing the constant's name as a word. In Apællo they function similarly. In
+normal practice the only difference will be that instead of pushing a memory
+address to the stack it will push the _identifier_ to the top of the stack. Also
+important to note is the syntactic differences. In order to create a variable 
+named `FOO` in Forth you execute `VARIABLE FOO`, and in order to define a new
+constant named `BAR` with value `23` you execute `23 CONSTANT BAR`. Obviously
+these use parser words which Apællo has done away with. In order to revolve this
+the syntax has been changed. In order to create a variable named `FOO` in Apællo
+you execute `V$FOO`, and in order to define a new constant named `BAR` with the
+value `23` you execute `23 C$BAR`. By switching to this syntax we do away with
+the parser words, make it look more elegant, and make it more consise.
