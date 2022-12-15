@@ -95,3 +95,47 @@ NOTE: Redefined words _change_ the entry instead of adding a new one, causing
       previously defined references to use the new version. This differs from
       Forth and can be a point of confusion to Forth programmers. Everyone is
       encouraged to read the above section carefully.
+
+== Memory
+
+Apællo's memory management works quite differently to memory management in the
+traditional Forth. In Forth, you directly interact with the system's memory.
+When you create a variable and attempt to access it, you get the address of the
+variable's cell in the overall system memory, as if you converted a C pointer to
+an integer. You also use the address of the target cell in the system's memory
+to read/write to it. Furthermore, Forth doesn't have a native concept of complex
+structures, so everything is organized into cells that can only contain numbers
+(at least natively). In Apællo, memory works a lot different. It is organized
+into lists, described earlier in this documentation, each of which is given a
+unique "identifier" number. These contain things like list literals used in the
+code, as well as variables and constants that are defined. These identifiers are
+used in place of the system memory address in the original Forth. For example,
+as described earlier, when you refer to a variable its identifier is given
+instead of its memory address, and the same for the usage of lists.
+
+=== Dictionaries
+
+In the original Forth, when you create a new word it is stored in the designated
+dictionary spot, among all other memory. They are directly accessible to the
+code, and there is even a parser word, `'`, that gives you the address of the
+desired word so you can do whatever with it. In Apællo, words are stored
+separately to everything else, and are not directly accessible from the code.
+This prevents weird situations such as developers manually defining functions, 
+and self-modifying code. It also improves the security of the code by preventing
+programmers from modifying words in ways that can mess with the interpreter or
+attack exploits in the system, whether malicious or accidental. Overall it keeps
+everything a lot cleaner and easier to reason about.
+
+=== Direct System Memory Accessing
+
+While Apællo manages memory a lot differently than Forth and opts to use its own
+identifier numbers instead of the system's memory addresses, you can still use
+the system's memory addresses for interaction. However, cells of the system's
+memory, when interacted with directly, can only contain numbers. Furthermore,
+the interpreter makes no guarantee that the address will not cause system errors
+such as segmentation faults or invalid memory addresses. Overall, the direct
+usage of memory in Apællo is heavily discouraged as it is considered unsafe code
+that requires quite the knowledge of the system to ensure that nothing is messed
+up. There are legitamate uses to it however, such as writing to memory mapped
+registers when running Apællo code on embedded chips. The interaction with the
+memory is done in the same way as in the original Forth.
