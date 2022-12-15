@@ -1,6 +1,7 @@
 = Apællo Documentation
 Luna Kilborn <leland.kilborn@hotmail.com>
 :description: The official documentation for the Apællo Language
+:toc:
 
 Apællo (pronounced uh - PIE - low) is a programming language based on Forth that adds first class functions, lists, and removes those unnecessary parser words. The original Forth language, designed in the 1970's was in wide use for home computers and maintains a significant pressence in embedded applications, due to the small size of the interpreter required to run it and the comfortability of low-level programming with it. Forth has been used everywhere, on people's home computers acting as a  pocket calculator, to teaching people about programming and computer science, to taking spacecraft to other planets and beyond. Forth is an amazing language, but that doesn't mean it can't be improved, which is what Apællo sets out to do.
 
@@ -65,3 +66,32 @@ the syntax has been changed. In order to create a variable named `FOO` in Apæll
 you execute `V$FOO`, and in order to define a new constant named `BAR` with the
 value `23` you execute `23 C$BAR`. By switching to this syntax we do away with
 the parser words, make it look more elegant, and make it more consise.
+
+== Defining Words
+
+Any language would be practically useless if it didn't allow you to definine
+subroutines, functions, or procedures (save for a few esolangs). Obviously,
+this can also be done in Forth, namely the syntax `: <word> <definition> ;`. In
+traditional Forth fashion this was usually implemented _in Forth_ using parser
+words. However, this is one of the _worst_ cases of their usage as it creates an
+unreasonable amount of confusion and weirdness. The truth is, there is no reason
+for it to be done this way. Apællo uses this same syntax, but because of its
+lack of parser words it is implemented directly in the interpreter as part of
+the core language. Another weird part of Forth is that when you redefine words,
+the old definition is still kept, and the new one is simply added as a new entry
+to the dictionary. Because of this, other words that referenced the redefined
+word will continue to use the old one, creating situations in which rarely used
+words can induce hard to find bugs by using old code, or requiring the developer
+to redefine all the other words that use it as well so that they refer to the
+updated dictionary entry. No other language works this way, and nor does Apællo.
+In Apællo when you redefine words it modifies the previous entry so that all
+references to it, whether created before or after the redefinition, will use the
+newest version of the entry. You are allowed to define variables in words, as
+well as constants, but these definitions are freed from the dictionary after the
+word's execution, similar to a variable "going out of scope" in a mainstream
+imperative language such as Java or C♯.
+
+NOTE: Redefined words _change_ the entry instead of adding a new one, causing
+      previously defined references to use the new version. This differs from
+      Forth and can be a point of confusion to Forth programmers. Everyone is
+      encouraged to read the above section carefully.
