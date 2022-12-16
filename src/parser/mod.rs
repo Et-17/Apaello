@@ -16,7 +16,10 @@ pub fn parse_file(file: &mut BufReader<File>) -> Result<structure::File, String>
             continue;
         }
 
-        lines.push(parse_line(trimmed, num + 1)?);
+        let parsed = parse_line(trimmed, num + 1)?;
+        if !parsed.words.is_empty() {
+            lines.push(parsed);
+        }
     }
     Ok(structure::File { lines })
 }
