@@ -1,6 +1,7 @@
 = Apællo Documentation
 Luna Kilborn <leland.kilborn@hotmail.com>
 :description: The official documentation for the Apællo Language
+:stem: latexmath
 :toc:
 
 Apællo (pronounced uh - PIE - low) is a programming language based on Forth that adds first class functions, lists, and removes those unnecessary parser words. The original Forth language, designed in the 1970's was in wide use for home computers and maintains a significant pressence in embedded applications, due to the small size of the interpreter required to run it and the comfortability of low-level programming with it. Forth has been used everywhere, on people's home computers acting as a  pocket calculator, to teaching people about programming and computer science, to taking spacecraft to other planets and beyond. Forth is an amazing language, but that doesn't mean it can't be improved, which is what Apællo sets out to do.
@@ -124,7 +125,13 @@ This prevents weird situations such as developers manually defining functions,
 and self-modifying code. It also improves the security of the code by preventing
 programmers from modifying words in ways that can mess with the interpreter or
 attack exploits in the system, whether malicious or accidental. Overall it keeps
-everything a lot cleaner and easier to reason about.
+everything a lot cleaner and easier to reason about. Apællo has three different
+dictionaries: the dictionary for executable words, the dictionary for variable,
+and the dictionary for constants. As explained in the section on executing words
+the interpreter, first the constants' dictionary is checked first, followed by
+the variables' dictionary if it is not found, and finally the executable words'
+dictionaries if it is still not found. Of course, if it is still not found then
+an error is thrown to the user alerting them that the word is unknown.
 
 === Direct System Memory Accessing
 
@@ -138,4 +145,11 @@ usage of memory in Apællo is heavily discouraged as it is considered unsafe cod
 that requires quite the knowledge of the system to ensure that nothing is messed
 up. There are legitamate uses to it however, such as writing to memory mapped
 registers when running Apællo code on embedded chips. The interaction with the
-memory is done in the same way as in the original Forth.
+memory is done in the same way as in the original Forth. In order to write to a
+memory address you first push the new value to the stack, then you push the
+target address to the stack, and finally you execute `!`. For example, in order
+to set `FOO` to fifteen you write `15 FOO !`. In order to get the value of a
+specific memory address you first push the target address ot the stack, and then
+execute `@`. For example, in order to get the value of `FOO` you write `FOO @`.
+There also exists the word `?`, which is defined as `@ .`, in order to make
+interactive editing easier.
